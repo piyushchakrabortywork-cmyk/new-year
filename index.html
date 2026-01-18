@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026: ENTER THE CHAOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Teko:wght@300;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Noise/Grain Overlay -->
+    <div class="noise-overlay"></div>
+    <div class="scanline"></div>
+    <div class="vignette"></div>
+    <div class="vignette"></div>
+
+    <!-- Custom Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+
+    <!-- Phase 0: System Boot -->
+    <section id="boot-sequence" class="fullscreen-section">
+        <div class="terminal-text" id="boot-text"></div>
+    </section>
+
+    <!-- Phase 1: Entry / Ignition (Renamed to After-Boot) -->
+    <section id="entry-void" class="fullscreen-section hidden">
+        <div id="intro-text" class="glitch-text"></div>
+    </section>
+
+    <!-- Phase 2: The Execution of 2025 -->
+    <section id="year-execution" class="fullscreen-section hidden">
+        <h1 id="year-2025" data-text="2025">2025</h1>
+        <div class="instruction-text">SCROLL TO PURGE</div>
+    </section>
+
+    <!-- Phase 3: The Arrival of 2026 -->
+    <section id="arrival-2026" class="fullscreen-section hidden">
+        <h1 id="year-2026" data-text="2026">2026</h1>
+        <div id="wishes-container"></div>
+    </section>
+
+    <!-- Phase 4: Final Takeover -->
+    <section id="final-takeover" class="fullscreen-section hidden">
+        <div class="content-wrapper">
+            <h2 class="welcome-text">WELCOME TO 2026</h2>
+            <p class="subtext">NO LIMITS. NO MERCY.</p>
+            <button id="enter-btn">ENTER THE CHAOS <span class="arrow">→</span></button>
+        </div>
+    </section>
+
+    <!-- Signature Watermark -->
+    <div class="watermark">
+        — Piyush Chakraborty • Accurex
+    </div>
+
+    <!-- Signature Watermark -->
+    <div class="watermark">
+        — Piyush Chakraborty • Accurex
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

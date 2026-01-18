@@ -1,0 +1,624 @@
+:root {
+    --void: #050505;
+    --accent: #FF003C;
+    /* Electric Red */
+    --accent-dim: #5c0016;
+    --text: #ffffff;
+    --font-primary: 'Orbitron', sans-serif;
+    --font-secondary: 'Teko', sans-serif;
+    --glitch-offset: 2px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none;
+    /* Hide default cursor */
+}
+
+body {
+    background-color: var(--void);
+    color: var(--text);
+    font-family: var(--font-primary);
+    overflow: hidden;
+    /* Controlled by JS initially */
+    height: 100vh;
+    width: 100vw;
+}
+
+/* --- UTILS --- */
+.hidden {
+    display: none !important;
+}
+
+.fullscreen-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+/* --- OVERLAYS --- */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+    pointer-events: none;
+    z-index: 999;
+}
+
+.scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    animation: scan 6s linear infinite;
+    pointer-events: none;
+    z-index: 998;
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 50%, black 150%);
+    pointer-events: none;
+    z-index: 997;
+}
+
+/* --- CURSOR --- */
+#cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+}
+
+#cursor-outline {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--text);
+    /* Initially white */
+    border-radius: 50%;
+    /* Start round */
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    transition: width 0.1s, height 0.1s, border-radius 0.2s, background-color 0.2s;
+    mix-blend-mode: difference;
+}
+
+/* --- BOOT PHASE --- */
+#boot-sequence {
+    background: #000;
+    z-index: 100;
+    align-items: flex-start;
+    padding: 2rem;
+}
+
+.terminal-text {
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--accent);
+    font-size: 1.5rem;
+    white-space: pre-line;
+    line-height: 1.5;
+    text-shadow: 0 0 5px var(--accent);
+}
+
+/* --- WATERMARK --- */
+.watermark {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    font-family: 'Courier New', monospace;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+    pointer-events: none;
+    z-index: 2000;
+    text-transform: uppercase;
+    animation: flicker-mark 12s infinite;
+}
+
+@keyframes flicker-mark {
+
+    0%,
+    95%,
+    98% {
+        opacity: 0.3;
+    }
+
+    96%,
+    99% {
+        opacity: 0.8;
+        text-shadow: 0 0 5px var(--accent);
+    }
+
+    97% {
+        opacity: 0.1;
+    }
+}
+
+/* --- ENTRY PHASE --- */
+#entry-void {
+    background: var(--void);
+    z-index: 50;
+}
+
+#intro-text {
+    font-size: 5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    mix-blend-mode: hard-light;
+    text-shadow: 0 0 10px var(--accent);
+}
+
+/* --- EXECUTION PHASE (2025) --- */
+#year-execution {
+    background: radial-gradient(circle, #1a0006 0%, var(--void) 70%);
+}
+
+#year-2025 {
+    font-size: 15vw;
+    font-weight: 900;
+    position: relative;
+    color: #fff;
+}
+
+/* Glitch Effect on Text */
+#year-2025::before,
+#year-2025::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--void);
+}
+
+#year-2025::before {
+    left: 2px;
+    text-shadow: -1px 0 red;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+#year-2025::after {
+    left: -2px;
+    text-shadow: -1px 0 blue;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+}
+
+.instruction-text {
+    margin-top: 2rem;
+    font-family: var(--font-secondary);
+    font-size: 1.5rem;
+    letter-spacing: 0.5rem;
+    opacity: 0.7;
+    animation: blink 0.2s infinite;
+}
+
+
+/* --- ARRIVAL PHASE (2026) --- */
+#arrival-2026 {
+    background: var(--void);
+    perspective: 1000px;
+}
+
+#year-2026 {
+    font-size: 20vw;
+    font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 20px var(--accent), 0 0 50px var(--accent);
+    transform: scale(0.1);
+    opacity: 0;
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.1s;
+}
+
+#wishes-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.wish-popup {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--accent);
+    color: var(--text);
+    padding: 1rem 2rem;
+    font-family: var(--font-secondary);
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 5px 5px 0 var(--accent-dim);
+    animation: popIn 0.1s ease-out forwards;
+}
+
+/* --- FINAL PHASE --- */
+#final-takeover .welcome-text {
+    font-size: 6rem;
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+#final-takeover .subtext {
+    font-family: var(--font-secondary);
+    font-size: 2rem;
+    color: #888;
+    margin-bottom: 3rem;
+    letter-spacing: 0.3em;
+}
+
+#enter-btn {
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    padding: 1.5rem 4rem;
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+#enter-btn:hover {
+    background: var(--accent);
+    color: var(--void);
+    box-shadow: 0 0 30px var(--accent);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes melt {
+    0% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scaleY(1.5) skewX(20deg);
+        opacity: 0.8;
+        filter: blur(5px);
+    }
+
+    100% {
+        transform: scaleY(0) scaleX(2);
+        opacity: 0;
+    }
+}
+
+@keyframes rgb-shake {
+    0% {
+        text-shadow: -2px 0 red, 2px 0 blue;
+        transform: translate(0, 0);
+    }
+
+    25% {
+        text-shadow: 2px 0 red, -2px 0 blue;
+        transform: translate(5px, 5px);
+    }
+
+    50% {
+        text-shadow: -2px 0 red, 2px 0 blue;
+        transform: translate(-5px, -5px);
+    }
+
+    75% {
+        text-shadow: 2px 0 red, -2px 0 blue;
+        transform: translate(5px, -5px);
+    }
+
+    100% {
+        text-shadow: -2px 0 red, 2px 0 blue;
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes scan {
+    0% {
+        top: 0%;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes glitch-anim-1 {
+    0% {
+        clip: rect(20px, 9999px, 80px, 0);
+    }
+
+    20% {
+        clip: rect(60px, 9999px, 10px, 0);
+    }
+
+    40% {
+        clip: rect(80px, 9999px, 50px, 0);
+    }
+
+    60% {
+        clip: rect(10px, 9999px, 90px, 0);
+    }
+
+    80% {
+        clip: rect(40px, 9999px, 30px, 0);
+    }
+
+    100% {
+        clip: rect(70px, 9999px, 60px, 0);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+        clip: rect(10px, 9999px, 50px, 0);
+    }
+
+    20% {
+        clip: rect(90px, 9999px, 30px, 0);
+    }
+
+    40% {
+        clip: rect(30px, 9999px, 10px, 0);
+    }
+
+    60% {
+        clip: rect(60px, 9999px, 70px, 0);
+    }
+
+    80% {
+        clip: rect(20px, 9999px, 80px, 0);
+    }
+
+    100% {
+        clip: rect(50px, 9999px, 90px, 0);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0) skew(20deg);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.2) skew(-10deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) skew(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes shake-violent {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+
+    10% {
+        transform: translate(-10px, -20px) rotate(-1deg);
+    }
+
+    20% {
+        transform: translate(-30px, 0px) rotate(1deg);
+    }
+
+    30% {
+        transform: translate(30px, 20px) rotate(0deg);
+    }
+
+    40% {
+        transform: translate(10px, -10px) rotate(1deg);
+    }
+
+    50% {
+        transform: translate(-10px, 20px) rotate(-1deg);
+    }
+
+    60% {
+        transform: translate(-30px, 10px) rotate(0deg);
+    }
+
+    70% {
+        transform: translate(30px, 10px) rotate(-1deg);
+    }
+
+    80% {
+        transform: translate(-10px, -10px) rotate(1deg);
+    }
+
+    90% {
+        transform: translate(10px, 20px) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}
+
+/* --- DEBRIS & EXPLOSION --- */
+.debris {
+    position: absolute;
+    background: #fff;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.shattered-text {
+    display: inline-block;
+    transition: transform 0.1s;
+}
+
+/* Screen Shake Keyframes */
+@keyframes screen-shake-hard {
+    0% {
+        transform: translate(0, 0) rotate(0);
+    }
+
+    10% {
+        transform: translate(-20px, -20px) rotate(-2deg);
+    }
+
+    20% {
+        transform: translate(20px, 20px) rotate(2deg);
+    }
+
+    30% {
+        transform: translate(-20px, 20px) rotate(-2deg);
+    }
+
+    40% {
+        transform: translate(20px, -20px) rotate(2deg);
+    }
+
+    50% {
+        transform: translate(0, 0) rotate(0);
+    }
+
+    60% {
+        transform: translate(-10px, 10px);
+    }
+
+    70% {
+        transform: translate(10px, -10px);
+    }
+
+    80% {
+        transform: translate(-5px, 5px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+.slam-active {
+    animation: slam-scale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slam-scale {
+    0% {
+        transform: scale(3);
+        opacity: 0;
+        filter: blur(20px);
+    }
+
+    50% {
+        opacity: 1;
+        filter: blur(0);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.screen-shake {
+    animation: screen-shake-hard 0.5s ease-out;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* Tablet & Mobile */
+@media (max-width: 1024px) {
+    :root {
+        --glitch-offset: 1px;
+    }
+
+    /* Hide cursor on touch devices */
+    #cursor-dot,
+    #cursor-outline {
+        display: none !important;
+    }
+
+    #year-2025 {
+        font-size: 25vw;
+        /* Larger on mobile to fill screen */
+    }
+
+    #year-2026 {
+        font-size: 30vw;
+    }
+
+    #intro-text,
+    .welcome-text {
+        font-size: 3rem !important;
+    }
+
+    .subtext {
+        font-size: 1.2rem !important;
+    }
+
+    #enter-btn {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+    }
+
+    .watermark {
+        font-size: 0.6rem;
+        right: 10px;
+        bottom: 10px;
+    }
+}
+
+/* Mobile specific tweaks */
+@media (max-width: 768px) {
+    .terminal-text {
+        font-size: 1rem;
+    }
+
+    .wish-popup {
+        font-size: 1.5rem;
+        padding: 0.5rem 1rem;
+        width: 80%;
+        text-align: center;
+        /* Ensure it doesn't overflow */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        /* Center initially, then JS overrides transform */
+    }
+}
